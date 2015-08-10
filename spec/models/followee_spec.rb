@@ -38,31 +38,34 @@ RSpec.describe Followee, type: :model do
     end
   end
 
-  # describe "find_or_create_by(user)" do
-  #   before :each do
-  #     # params = {}
-  #     # params[:source] = "instagram"
+  describe "find_or_create_by(user)" do    
+    before :each do
+      @source = "instagram"
 
-  #     @user = {
-  #       "id" => "1234567890",
-  #       "username" => "samiam",
-  #       "profile_picture" => "sam.jpg",
-  #     }
-  #   end
+      @user = {
+        "id" => "1234567890",
+        "username" => "samiam",
+        "profile_picture" => "sam.jpg",
+      }
+    end
 
-  #   it "creates a new Followee if it does not already exist" do
-  #     # params[:source] = "instagram"
-  #     Followee.find_or_create_by(@user)
+    it "creates a new Followee if it does not already exist" do
+      Followee.find_or_create_by(@user, @source)
+      expect(Followee.count).to eq 1
+    end
 
-  #     expect(followee).to be_a Followee
+    it "does not create a new Followee if it already exists" do
+      Followee.find_or_create_by(@user, @source)
+      Followee.find_or_create_by(@user, @source)
 
-  #     # expect(Followee.count).to eq 1
-  #   end
+      expect(Followee.count).to eq 1
+    end
 
-  #   it "does not create a new Followee if it already exists" do
-  #   end
-
-  #   it "finds the existing Followee record if it already exists" do
-  #   end
-  # end
+    it "finds the existing Followee record if it already exists" do
+      Followee.find_or_create_by(@user, @source)
+      
+      followee = Followee.find_by(native_id: "1234567890")
+      expect(Followee.find_or_create_by(@user, @source)).to eq(followee)
+    end
+  end
 end
